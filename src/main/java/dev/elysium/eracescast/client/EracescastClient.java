@@ -5,13 +5,11 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
@@ -62,7 +60,7 @@ public class EracescastClient implements ClientModInitializer {
                 "category.elysium.keys"
         ));
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (!ClientPlayNetworking.canSend(Identifier.of("elysium", "eraces")))
+            if (!ClientPlayNetworking.canSend(ERacesPayload.ID))
                 return;
 
             if (myKey.wasPressed()) {
@@ -102,7 +100,7 @@ public class EracescastClient implements ClientModInitializer {
                 }
             }
         });
-
+        PayloadTypeRegistry.playC2S().register(ERacesPayload.ID, ERacesPayload.CODEC);
         HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
             MinecraftClient client = MinecraftClient.getInstance();
 
