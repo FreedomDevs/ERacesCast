@@ -31,8 +31,8 @@ public class EracescastClient implements ClientModInitializer {
 
     public void castEnd() {
         isCastEnabled = false;
-        System.out.println("Каст завершён с "+keys);
-        MinecraftClient.getInstance().player.sendMessage(Text.literal("Каст завершён с "+keys), false);
+        System.out.println("Каст завершён с " + keys);
+        MinecraftClient.getInstance().player.sendMessage(Text.literal("Каст завершён с " + keys), false);
         sendEndCast();
     }
 
@@ -40,12 +40,14 @@ public class EracescastClient implements ClientModInitializer {
         ERacesPayload payload = new ERacesPayload(System.currentTimeMillis(), "start_cast", "");
         ClientPlayNetworking.send(payload);
     }
+
     public void sendEndCast() {
         ERacesPayload payload = new ERacesPayload(System.currentTimeMillis(), "end_cast", keys.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining()));
         ClientPlayNetworking.send(payload);
     }
+
     public void sendKey(int key) {
         ERacesPayload payload = new ERacesPayload(System.currentTimeMillis(), "cast_key", String.valueOf(key));
         ClientPlayNetworking.send(payload);
@@ -76,7 +78,7 @@ public class EracescastClient implements ClientModInitializer {
                     sendStartCast();
                     System.out.println("Каст запущен");
                 } else if (System.currentTimeMillis() - castEnableTime > 100)
-                        castEnd();
+                    castEnd();
             }
 
             if (isCastEnabled && System.currentTimeMillis() - castEnableTime > 1000 * 10)
@@ -103,26 +105,68 @@ public class EracescastClient implements ClientModInitializer {
         PayloadTypeRegistry.playC2S().register(ERacesPayload.ID, ERacesPayload.CODEC);
         HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
             MinecraftClient client = MinecraftClient.getInstance();
+            int x = 7;
+            int width = 70;
+            int height = 14;
+            int barHeight = 2;
 
-            // Координаты квадрата
-            int x1 = 7;
-            int y1 = 7;
-
-            int textColor = 0xFF662244;
-            int backgroundColor = 0x80AAAAAA;
-            int progressBarColor = 0xFFAAAA00;
+            int textColor = 0xFFFFCC88;
+            int backgroundColor = 0x88000000;
+            int borderColor = 0xFF444444;
+            int progressStartColor = 0xFFFFAA00;
+            int progressEndColor = 0xFFFF3300;
 
             if (isCastEnabled) {
-                drawContext.fill(x1 - 3, y1 - 3, x1 + 65, y1 + 11, backgroundColor);
-                drawContext.drawText(client.textRenderer, "Режим каста", x1, y1, textColor, false);
+                long elapsed = System.currentTimeMillis() - castEnableTime;
+                long duration = 10_000;
+                double progress = Math.min(1.0, Math.max(0.0, (double) elapsed / duration));
 
-                long timeToEnd = System.currentTimeMillis() - castEnableTime;
-                long min = 0;
-                long max = 10 * 1000;
+                int startY = -height - 5;
+                int endY = 7;
 
-                double progress = (double) (timeToEnd - min) / (max - min);
+                double animProgress;
+                if (progress < 1.0) {
+                    animProgress = 1 - Math.pow(1 - Math.min(1.0, elapsed / 300.0), 3);
+                } else {
+                    long afterEnd = elapsed - duration;
+                    animProgress = 1 - Math.pow(Math.min(1.0, afterEnd / 300.0), 3);
+                }
 
-                drawContext.fill(x1 - 1, y1 + 9, x1 + (63 - (int) (63 * progress)), y1 + 10, progressBarColor);
+                int y = (int) (startY + (endY - startY) * animProgress);
+
+                float alpha = Math.min(1.0f, elapsed / 200f);
+                int bgColor = (backgroundColor & 0x00FFFFFF) | ((int) (alpha * 200) << 24);
+                drawContext.fill(x - 1, y - 1, x + width + 1, y + height + 1, borderColor);
+                drawContext.fill(x, y, x + width, y + height, bgColor);
+
+                String text = "Режим каста";
+                drawContext.drawText(client.textRenderer, text, x + 5, y + 4, 0x44000000, false);
+                drawContext.drawText(client.textRenderer, text, x + 4, y + 3, textColor, false);
+
+                int textHeight = 9;
+                int barY1 = y + textHeight + 3;
+                int barY2 = barY1 + barHeight;
+                int barWidth = (int) ((width - 4) * (1.0 - Math.pow(progress, 1.5)));
+
+                for (int i = 0; i < barWidth; i++) {
+                    double ratio = (double) i / barWidth;
+                    int r = (int) (((progressStartColor >> 16 & 0xFF) * (1 - ratio)) + ((progressEndColor >> 16 & 0xFF) * ratio));
+                    int g = (int) (((progressStartColor >> 8 & 0xFF) * (1 - ratio)) + ((progressEndColor >> 8 & 0xFF) * ratio));
+                    int b = (int) (((progressStartColor & 0xFF) * (1 - ratio)) + ((progressEndColor & 0xFF) * ratio));
+
+                    double pulse = Math.sin(System.currentTimeMillis() / 300.0) * 0.1 + 0.9;
+                    r = Math.min(255, (int) (r * pulse));
+                    g = Math.min(255, (int) (g * pulse));
+                    b = Math.min(255, (int) (b * pulse));
+
+                    int color = (0xFF << 24) | (r << 16) | (g << 8) | b;
+                    drawContext.fill(x + 2 + i, barY1, x + 2 + i + 1, barY2, color);
+                }
+
+                if (barWidth > 0) {
+                    int glowColor = 0x66FFFFFF;
+                    drawContext.fill(x + 2 + barWidth - 1, barY1, x + 2 + barWidth, barY2, glowColor);
+                }
             }
         });
 
