@@ -11,8 +11,8 @@ public record ERacesPayload(Long timestamp, String type, String payload) impleme
 
     public static final PacketCodec<RegistryByteBuf, ERacesPayload> CODEC = PacketCodec.tuple(
             PacketCodecs.LONG, ERacesPayload::timestamp,
-            PacketCodecs.STRING, ERacesPayload::type,
-            PacketCodecs.STRING, ERacesPayload::payload,
+            UTFEncoder.INSTANCE, ERacesPayload::type,
+            UTFEncoder.INSTANCE, ERacesPayload::payload,
             ERacesPayload::new
     );
 
