@@ -11,10 +11,7 @@
   "environment": "client",
   "entrypoints": {
     "client": [
-      "dev.elysium.eracescast.client.EracescastClient"
-    ],
-    "main": [
-      "dev.elysium.eracescast.Eracescast"
+      "dev.elysium.eracescast.ERacesCast"
     ]
   },
   "depends": {

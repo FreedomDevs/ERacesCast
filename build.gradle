@@ -1,5 +1,8 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     id 'fabric-loom' version '1.11-SNAPSHOT'
+    id 'org.jetbrains.kotlin.jvm' version '2.1.21'
     id 'maven-publish'
 }
 
@@ -9,7 +12,6 @@ group = project.maven_group
 base {
     archivesName = project.archives_base_name
 }
-
 
 repositories {
     // Add repositories to retrieve artifacts from in here.
@@ -26,6 +28,23 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:2.1.21"
+}
+
+tasks.register("runClientGuiTest", JavaExec) {
+    group = "fabric"
+    description = "Runs the Minecraft client with GUI test mode"
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass.set("net.fabricmc.devlaunchinjector.Main")
+
+    def runClient = tasks.named("runClient").get()
+    jvmArgs(runClient.jvmArgs)
+    args(runClient.args)
+    args "--guiTest", "true"
+
+    environment runClient.environment
+    workingDir = new File(runClient.workingDir, "run")
 }
 
 processResources {
