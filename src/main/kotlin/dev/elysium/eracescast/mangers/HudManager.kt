@@ -1,9 +1,27 @@
 package dev.elysium.eracescast.mangers
 
 import net.minecraft.client.MinecraftClient
+import java.lang.reflect.Method
 import kotlin.math.pow
 
 object HudManager {
+    private var cachedMethod: Method? = null
+    fun callDrawText(instance: Any, arg0: Any, arg1: String, arg2: Int, arg3: Int, arg4: Int, arg5: Boolean): Int {
+        try {
+            if (cachedMethod == null) {
+                cachedMethod = instance::class.java.methods.firstOrNull {
+                    it.name == "method_51433" && it.parameterCount == 6
+                } ?: throw NoSuchMethodException("method_51433 not found")
+                cachedMethod!!.isAccessible = true
+            }
+
+            return cachedMethod!!.invoke(instance, arg0, arg1, arg2, arg3, arg4, arg5) as? Int ?: -1
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return -1
+        }
+    }
+
     fun initHudManager() {
         @Suppress("Deprecation")
         net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback.EVENT.register({ drawContext, tickDelta ->
@@ -43,8 +61,12 @@ object HudManager {
                 drawContext.fill(x, y, x + width, y + height, bgColor)
 
                 val text: String = "Режим каста"
-                drawContext.drawText(client.textRenderer, text, x + 5, y + 4, 0x44000000, false)
-                drawContext.drawText(client.textRenderer, text, x + 4, y + 3, textColor, false)
+
+                callDrawText(drawContext, client.textRenderer, text, x + 5, y + 4, 0x44000000, false)
+                callDrawText(drawContext, client.textRenderer, text, x + 4, y + 3, textColor, false)
+                // Было:
+                // drawContext.drawText(client.textRenderer, text, x + 5, y + 4, 0x44000000, false)
+                // drawContext.drawText(client.textRenderer, text, x + 4, y + 3, textColor, false)
 
                 val textHeight: Int = 9
                 val barY1: Int = y + textHeight + 3
