@@ -13,6 +13,11 @@ class ERacesCast : ClientModInitializer {
     override fun onInitializeClient() {
         LOGGER.info("Инициализация")
 
+        val version = FabricLoader.getInstance().rawGameVersion
+        if (version !in listOf("1.21.4", "1.21.5")) {
+            LOGGER.error("Версия майнкрафт не поддерживается: $version")
+        }
+
         val args = FabricLoader.getInstance().getLaunchArguments(true)
         isNetworkingEnabled = !listOf(*args).contains("--guiTest")
 
