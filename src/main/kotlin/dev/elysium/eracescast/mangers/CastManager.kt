@@ -2,6 +2,8 @@ package dev.elysium.eracescast.mangers
 
 import dev.elysium.eracescast.ERacesCast.Companion.LOGGER
 import dev.elysium.eracescast.ERacesCast.Companion.isNetworkingEnabled
+import dev.elysium.eracescast.compat.InputUtilCompat
+import dev.elysium.eracescast.compat.KeyBindingHelperCompat
 import dev.elysium.eracescast.mangers.PacketSendManager.sendKey
 import dev.elysium.eracescast.mangers.PacketSendManager.sendStartCast
 import dev.elysium.eracescast.mangers.SlotLockingManager.lockSlot
@@ -33,14 +35,13 @@ object CastManager {
     }
 
     fun initListeners() {
-        keybind = KeyBindingHelper.registerKeyBinding(
-            KeyBinding(
-                "key.elysium.erace",
-                InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_G,
-                "category.elysium.keys"
-            )
-        )
+        keybind = KeyBindingHelperCompat.createKeyBinding(
+            "key.elysium.erace",
+            InputUtil.Type.KEYSYM,
+            GLFW.GLFW_KEY_G,
+            "elysium.keys"
+        ) as KeyBinding
+
 
         ClientTickEvents.END_CLIENT_TICK.register({ client ->
             if (isNetworkingEnabled && !ClientPlayNetworking.canSend(ERacesCastPayload.ID)) return@register
@@ -68,7 +69,7 @@ object CastManager {
                     val num = if (i == 9) 0 else i + 1
                     val key = if (i == 9) GLFW.GLFW_KEY_0 else GLFW.GLFW_KEY_1 + i
 
-                    if (InputUtil.isKeyPressed(client.window.handle, key)) {
+                    if (InputUtilCompat.isKeyPressed(client.window, key)) {
                         lastNumbersPressed.add(num)
                     } else if (lastNumbersPressed.contains(num)) {
                         sendKey(num)

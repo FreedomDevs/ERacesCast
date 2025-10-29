@@ -14,7 +14,7 @@ class ERacesCast : ClientModInitializer {
         LOGGER.info("Инициализация")
 
         val version = FabricLoader.getInstance().rawGameVersion
-        if (version !in listOf("1.21.4", "1.21.5", "1.21.6")) {
+        if (version !in listOf("1.21.4", "1.21.5", "1.21.6", "1.21.7", "1.21.8", "1.21.9", "1.21.10")) {
             LOGGER.error("Версия майнкрафт не поддерживается: $version")
         }
 
