@@ -56,16 +56,4 @@ object KeyBindingHelperCompat {
             throw RuntimeException("Failed to create KeyBinding")
         }
     }
-
-    // вспомогательная функция для KeyCategory
-    private fun categoryNamespace(category: String): Any {
-        // создаём объект class_2960 с namespace + path
-        val identifierClazz = Class.forName("net.minecraft.class_2960") // Identifier
-        val method = identifierClazz.getMethod("method_60655", String::class.java, String::class.java)
-        return method.invoke(identifierClazz, "modid", category)!!
-    }
-
-    private fun categoryPath(category: String): Any {
-        return category // здесь может быть просто path как строка
-    }
 }

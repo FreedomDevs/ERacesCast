@@ -2,7 +2,6 @@ package dev.elysium.eracescast.mangers
 
 import dev.elysium.eracescast.ERacesCast.Companion.LOGGER
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
-import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.network.ClientPlayerEntity
 import net.minecraft.entity.player.PlayerInventory
@@ -80,9 +79,11 @@ object SlotLockingManager {
         LOGGER.info("Блокировка хотбара разблокирована")
     }
 
+    @Suppress("unused")
     fun isLocked(): Boolean {
         return lockedSlot != -1
     }
+    @Suppress("unused")
     fun isUnlocked(): Boolean {
         return lockedSlot == -1
     }

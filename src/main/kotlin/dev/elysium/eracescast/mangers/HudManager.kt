@@ -24,12 +24,12 @@ object HudManager {
 
     fun initHudManager() {
         @Suppress("Deprecation")
-        net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback.EVENT.register({ drawContext, tickDelta ->
+        net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback.EVENT.register({ drawContext, _ /*tick_delta*/ ->
             val client = MinecraftClient.getInstance()
-            val x: Int = 7
-            val width: Int = 70
-            val height: Int = 14
-            val barHeight: Int = 2
+            val x = 7
+            val width = 70
+            val height = 14
+            val barHeight = 2
 
             val textColor: Int = 0xFFFFCC88.toInt()
             val backgroundColor: Int = 0x88000000.toInt()
@@ -43,13 +43,13 @@ object HudManager {
                 val progress: Double = (elapsed.toDouble() / duration).coerceIn(0.0, 1.0)
 
                 val startY: Int = -height - 5
-                val endY: Int = 7
+                val endY = 7
 
                 var animProgress: Double
                 if (progress < 1.0) {
                     animProgress = 1 - (1 - (elapsed / 300.0).coerceAtMost(1.0)).pow(3)
                 } else {
-                    val afterEnd: Long = elapsed - duration;
+                    val afterEnd: Long = elapsed - duration
                     animProgress = 1 - (afterEnd / 300.0).coerceAtMost(1.0).pow(3)
                 }
 
@@ -60,7 +60,7 @@ object HudManager {
                 drawContext.fill(x - 1, y - 1, x + width + 1, y + height + 1, borderColor)
                 drawContext.fill(x, y, x + width, y + height, bgColor)
 
-                val text: String = "Режим каста"
+                val text = "Режим каста"
 
                 callDrawText(drawContext, client.textRenderer, text, x + 5, y + 4, 0x44000000, false)
                 callDrawText(drawContext, client.textRenderer, text, x + 4, y + 3, textColor, false)
@@ -68,7 +68,7 @@ object HudManager {
                 // drawContext.drawText(client.textRenderer, text, x + 5, y + 4, 0x44000000, false)
                 // drawContext.drawText(client.textRenderer, text, x + 4, y + 3, textColor, false)
 
-                val textHeight: Int = 9
+                val textHeight = 9
                 val barY1: Int = y + textHeight + 3
                 val barY2: Int = barY1 + barHeight
                 val barWidth: Int = ((width - 4) * (1.0 - Math.pow(progress, 1.5))).toInt()
@@ -82,20 +82,20 @@ object HudManager {
                     var b: Int =
                         (((progressStartColor and 0xFF) * (1 - ratio)) + ((progressEndColor and 0xFF) * ratio)).toInt()
 
-                    val pulse: Double = Math.sin(System.currentTimeMillis() / 300.0) * 0.1 + 0.9;
-                    r = (r * pulse).toInt().coerceIn(0, 255);
-                    g = (g * pulse).toInt().coerceIn(0, 255);
+                    val pulse: Double = Math.sin(System.currentTimeMillis() / 300.0) * 0.1 + 0.9
+                    r = (r * pulse).toInt().coerceIn(0, 255)
+                    g = (g * pulse).toInt().coerceIn(0, 255)
                     b = (b * pulse).toInt().coerceIn(0, 255)
 
                     val color = (0xFF shl 24) or (r shl 16) or (g shl 8) or b
-                    drawContext.fill(x + 2 + i, barY1, x + 2 + i + 1, barY2, color);
+                    drawContext.fill(x + 2 + i, barY1, x + 2 + i + 1, barY2, color)
                 }
 
                 if (barWidth > 0) {
-                    val glowColor: Int = 0x66FFFFFF;
-                    drawContext.fill(x + 2 + barWidth - 1, barY1, x + 2 + barWidth, barY2, glowColor);
+                    val glowColor = 0x66FFFFFF
+                    drawContext.fill(x + 2 + barWidth - 1, barY1, x + 2 + barWidth, barY2, glowColor)
                 }
             }
-        });
+        })
     }
 }
