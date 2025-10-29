@@ -16,7 +16,7 @@ object KeyBindingHelperCompat {
         val keyBindingClass = Class.forName("net.minecraft.class_304")
         return try {
             val clazz = Class.forName("net.minecraft.class_304") // KeyBinding
-            if (isVersionAtLeast(rawVersion, 1, 21, 9)) {
+            if (isVersionAtLeast(1, 21, 9)) {
                 // net.minecraft.class_304$class_11900 — KeyBinding$KeyCategory
                 val keyCategoryClass = Class.forName("net.minecraft.class_304\$class_11900")
                 val identifierClass = Class.forName("net.minecraft.class_2960")

@@ -1,6 +1,7 @@
 package dev.elysium.eracescast.mangers
 
 import dev.elysium.eracescast.ERacesCast.Companion.LOGGER
+import dev.elysium.eracescast.compat.PlayerInventoryCompat
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.network.ClientPlayerEntity
@@ -9,34 +10,6 @@ import java.lang.reflect.Field
 
 object SlotLockingManager {
     private var lockedSlot: Int = -1
-
-    private var selectedSlotField: Field? = null
-    private fun getSelectedSlotField(): Field? {
-        if (selectedSlotField == null) {
-            try {
-                selectedSlotField = PlayerInventory::class.java.getDeclaredField("field_7545")
-                selectedSlotField?.isAccessible = true
-            } catch (e: NoSuchFieldException) {
-                e.printStackTrace()
-            }
-        }
-        return selectedSlotField
-    }
-    fun getSelectedSlot(player: ClientPlayerEntity): Int {
-        return try {
-            getSelectedSlotField()?.get(player.inventory) as Int
-        } catch (e: Exception) {
-            e.printStackTrace()
-            0 // дефолтное значение, если не получилось
-        }
-    }
-    fun setSelectedSlot(player: ClientPlayerEntity, slot: Int) {
-        try {
-            getSelectedSlotField()?.set(player.inventory, slot)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
 
     fun initListener() {
         ClientTickEvents.END_CLIENT_TICK.register { client ->
@@ -50,7 +23,8 @@ object SlotLockingManager {
                 return@register
             }
 
-            setSelectedSlot(player, lockedSlot)
+
+            PlayerInventoryCompat(player).selectedSlot = lockedSlot
         }
     }
 
@@ -65,7 +39,7 @@ object SlotLockingManager {
             return
         }
 
-        lockedSlot = getSelectedSlot(player)
+        lockedSlot = PlayerInventoryCompat(player).selectedSlot
         LOGGER.info("Блокировка хотбара установлена")
     }
 
