@@ -64,9 +64,10 @@ object CastManager {
                     return@register
                 }
 
-                for (i in 0..8) {
-                    val num = i + 1
-                    val key = GLFW.GLFW_KEY_1 + i // 1..9
+                for (i in 0..9) {
+                    val num = if (i == 9) 0 else i + 1
+                    val key = if (i == 9) GLFW.GLFW_KEY_0 else GLFW.GLFW_KEY_1 + i
+
                     if (InputUtil.isKeyPressed(client.window.handle, key)) {
                         lastNumbersPressed.add(num)
                     } else if (lastNumbersPressed.contains(num)) {
