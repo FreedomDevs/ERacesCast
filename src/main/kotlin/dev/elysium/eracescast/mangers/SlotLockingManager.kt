@@ -1,12 +1,9 @@
 package dev.elysium.eracescast.mangers
 
-import dev.elysium.eracescast.ERacesCast.Companion.LOGGER
+import dev.elysium.eblanexp.EBlanexpMain.Companion.LOGGER
 import dev.elysium.eracescast.compat.PlayerInventoryCompat
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.minecraft.client.MinecraftClient
-import net.minecraft.client.network.ClientPlayerEntity
-import net.minecraft.entity.player.PlayerInventory
-import java.lang.reflect.Field
 
 object SlotLockingManager {
     private var lockedSlot: Int = -1

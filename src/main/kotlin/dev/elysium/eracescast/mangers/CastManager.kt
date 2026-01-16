@@ -1,7 +1,7 @@
 package dev.elysium.eracescast.mangers
 
-import dev.elysium.eracescast.ERacesCast.Companion.LOGGER
-import dev.elysium.eracescast.ERacesCast.Companion.isNetworkingEnabled
+import dev.elysium.eblanexp.EBlanexpMain.Companion.LOGGER
+import dev.elysium.eracescast.ERacesCast.isNetworkingEnabled
 import dev.elysium.eracescast.compat.InputUtilCompat
 import dev.elysium.eracescast.compat.KeyBindingHelperCompat
 import dev.elysium.eracescast.mangers.PacketSendManager.sendKey

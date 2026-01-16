@@ -1,6 +1,6 @@
 package dev.elysium.eracescast.mangers
 
-import dev.elysium.eracescast.ERacesCast.Companion.isNetworkingEnabled
+import dev.elysium.eracescast.ERacesCast.isNetworkingEnabled
 import dev.elysium.eracescast.packets.ERacesCastPayload
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry

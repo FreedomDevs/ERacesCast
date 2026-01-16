@@ -9,15 +9,8 @@ import net.fabricmc.loader.api.FabricLoader
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 
-class ERacesCast : ClientModInitializer {
-    override fun onInitializeClient() {
-        LOGGER.info("Инициализация")
-
-        val version = FabricLoader.getInstance().rawGameVersion
-        if (version !in listOf("1.21.4", "1.21.5", "1.21.6", "1.21.7", "1.21.8", "1.21.9", "1.21.10", "1.21.11")) {
-            LOGGER.error("Версия майнкрафт не поддерживается: $version")
-        }
-
+object ERacesCast {
+    fun onInitializeClient() {
         val args = FabricLoader.getInstance().getLaunchArguments(true)
         isNetworkingEnabled = !listOf(*args).contains("--guiTest")
 
@@ -25,11 +18,7 @@ class ERacesCast : ClientModInitializer {
         SlotLockingManager.initListener()
         HudManager.initHudManager()
         CastManager.initListeners()
-        LOGGER.info("Инициализация завершена")
     }
 
-    companion object {
-        val LOGGER: Logger = LogManager.getLogger("ERacesCast")
-        var isNetworkingEnabled: Boolean = true
-    }
+    var isNetworkingEnabled: Boolean = true
 }
