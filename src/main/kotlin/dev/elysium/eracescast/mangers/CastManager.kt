@@ -10,6 +10,7 @@ import dev.elysium.eracescast.mangers.SlotLockingManager.lockSlot
 import dev.elysium.eracescast.mangers.SlotLockingManager.unlockSlot
 import dev.elysium.eracescast.packets.ERacesCastPayload
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.minecraft.client.option.KeyBinding
 import net.minecraft.client.util.InputUtil
@@ -35,12 +36,12 @@ object CastManager {
 
     fun initListeners() {
         keybind = KeyBindingHelperCompat.createKeyBinding(
-            "key.elysium.erace",
+            "key.elysium.eblanexp",
             InputUtil.Type.KEYSYM,
             GLFW.GLFW_KEY_G,
             "elysium.keys"
         ) as KeyBinding
-
+        KeyBindingHelper.registerKeyBinding(keybind)
 
         ClientTickEvents.END_CLIENT_TICK.register({ client ->
             if (isNetworkingEnabled && !ClientPlayNetworking.canSend(ERacesCastPayload.ID)) return@register

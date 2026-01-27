@@ -5,7 +5,7 @@ import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.util.InputUtil
 import java.lang.reflect.Constructor
 
-object KeyBindingHelperCompat {
+object  KeyBindingHelperCompat {
     fun createKeyBinding(
         translationKey: String,
         type: InputUtil.Type,
