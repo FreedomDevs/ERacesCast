@@ -1,6 +1,7 @@
 package dev.elysium.eblanexp
 
 import dev.elysium.eracescast.ERacesCast
+import dev.elysium.eracescast.utils.PrefixedLogger
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.loader.api.FabricLoader
 import org.apache.logging.log4j.LogManager
@@ -20,6 +21,9 @@ class EBlanexpMain : ClientModInitializer {
     }
 
     companion object {
-        val LOGGER: Logger = LogManager.getLogger("EBlanexp")
+        val LOGGER: PrefixedLogger = PrefixedLogger(
+            LogManager.getLogger("EBlanexp"),
+            prefix = "EBlanexp"
+        )
     }
 }
